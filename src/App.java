@@ -1,10 +1,15 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Scanner;
-import users.*;
-import utility.*;
+
+import users.Users;
+import utility.Hash;
 
 public class App{
     static Scanner in = new Scanner(System.in);
@@ -14,6 +19,7 @@ public class App{
     }
 
     private void run(){
+        setup();
         System.out.println();
         System.out.println("##=====#===============#====");
         System.out.println("||     |               |    ");
@@ -31,7 +37,11 @@ public class App{
         System.out.println();
 
         loop:while (true) {
-            printMenu();
+            System.out.println("1-Cadastrar");
+            System.out.println("2-Entrar com Login e senha");
+            System.out.println("3-Entrar como Convidado");
+            System.out.println("4-Derrubar Servidor");
+
             String menuOpt = in.nextLine(); 
             System.out.println();
 
@@ -55,14 +65,7 @@ public class App{
         endProgram();
     }
 
-    //Print do menu Inicial
-    public void printMenu(){
-        System.out.println("1-Cadastrar");
-        System.out.println("2-Entrar com Login e senha");
-        System.out.println("3-Entrar como Convidado");
-        System.out.println("4-Derrubar Servidor");
-    }
-
+    //Cadastro
     public void signUp(){
         String separator = "BDE@BV";
 
@@ -81,12 +84,41 @@ public class App{
         String userData = Users.getUserID() + separator + nameUp +separator + emailUp + separator + passUp;
 
         userData = Hash.getSecurePassword(userData);
-        addToFIle(userData+'\n', "data/users.txt");
-        Users.addOneUserId();
+
+        addUser(userData);
     }
 
     public void endProgram(){
         in.close();
+    }
+
+    public void addUser(String data){
+        addToFIle(data+'\n', "data/users.txt");
+        Users.addOneUserId();
+
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("data/stuff.txt"), "UTF-8"));
+            String inputBuffer = "";
+            String line;
+            int lineNumber = 0;
+
+            while ((line = br.readLine()) != null) {
+                if(lineNumber == 1){
+                    inputBuffer += Integer.parseInt(line) + 1;
+                }else{
+                    inputBuffer += line;
+                }
+                inputBuffer += '\n';
+                lineNumber++;
+            }
+            br.close();
+            Writer bw = new BufferedWriter(new FileWriter("data/stuff.txt"));			
+			bw.write(inputBuffer);
+			bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void addToFIle(String content, String path) {
@@ -101,5 +133,24 @@ public class App{
 		}
 
 	}
-    
+   
+    public void setup(){
+        try{
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("data/stuff.txt"), "UTF-8"));
+            String line;
+            int lineNumber = 0;
+            
+            while ((line = br.readLine()) != null) {
+                if(lineNumber == 1){
+                   Users.setUserID(Integer.parseInt(line));
+                }
+            lineNumber++;
+            }
+            br.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+    }
 }
