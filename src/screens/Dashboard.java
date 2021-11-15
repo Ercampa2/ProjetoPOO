@@ -81,8 +81,10 @@ public class Dashboard extends Screens {
             e.printStackTrace();
         }
 
-        addToFIle(user.getUserId() + separator + authorName + separator + title + separator + content +"\n",
+        addToFIle(user.getUserId() + separator + authorName + separator + title + separator + content + "\n",
                 "data/texts.txt");
+        System.out.println("Post adicionado!");
+        System.out.println();
     }
 
     private void showPosts() {
@@ -163,6 +165,8 @@ public class Dashboard extends Screens {
                     System.out.println("Novo texto:");
                     System.out.println();
                     inputBuffer += data[0] + separator + data[1] + separator + data[2] + separator + in.nextLine();
+                    System.out.println("Texto editado!");
+                    System.out.println();
                     break;
                 } else {
                     inputBuffer += line;
@@ -212,7 +216,7 @@ public class Dashboard extends Screens {
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(separator);
                 if (Integer.parseInt(data[0]) == user.getUserId() && data[2].equals(text)) {
-                    System.out.println("Deletado");
+                    System.out.println("Post deletado");
                     System.out.println();
                 } else {
                     inputBuffer += line;
