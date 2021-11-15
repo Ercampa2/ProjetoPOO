@@ -17,7 +17,7 @@ public class InitialScreen extends Screens {
     private static Scanner in = new Scanner(System.in);
     private String separator = "BDE@BV";
 
-    public void showScreen() {
+    public int showScreen() {
         System.out.println();
         System.out.println("##=====#===============#====");
         System.out.println("||     |               |    ");
@@ -34,7 +34,7 @@ public class InitialScreen extends Screens {
 
         System.out.println();
 
-        loop: while (true) {
+        while (true) {
             System.out.println("1-Cadastrar");
             System.out.println("2-Entrar com Login e senha");
             System.out.println("3-Entrar como Convidado");
@@ -49,17 +49,16 @@ public class InitialScreen extends Screens {
                 break;
             case "2":
                 int id = SignIn();
-                if (id == -1) {
+                if (id == -2) {
                     System.out.println("Login ou senha incoretos!");
                 } else {
-                    System.out.println("Concetado");
+                    return id;
                 }
                 break;
             case "3":
-                // SignGuest();
-                break;
+                return -1;
             case "4":
-                break loop;
+            return -2;
             default:
                 System.out.println("Opção Inválida!");
                 break;
@@ -126,8 +125,7 @@ public class InitialScreen extends Screens {
             }
         }
         passUp = Hash.getSecurePassword(passUp);
-
-        String userData = Users.getUserID() + separator + nameUp + separator + emailUp + separator + passUp;
+        String userData = Users.getnumUsers() + separator + nameUp + separator + emailUp + separator + passUp;
 
         addUser(userData);
 
@@ -175,8 +173,7 @@ public class InitialScreen extends Screens {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ;
-        return -1;
+        return -2;
 
     };
 
@@ -191,7 +188,6 @@ public class InitialScreen extends Screens {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }

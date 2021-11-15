@@ -1,11 +1,7 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.Scanner;
 
 import users.Users;
@@ -13,6 +9,8 @@ import screens.*;
 
 public class App{
     private static Scanner in = new Scanner(System.in);
+    private Users user = new Users();
+    private Screens initial = new InitialScreen();
     public static void main(String[] args) throws Exception {
         App app = new App();
         app.run();
@@ -20,8 +18,21 @@ public class App{
 
     private void run(){
         setup();
-        Screens initial = new InitialScreen();
-        initial.showScreen();
+        loop:while(true){
+            int id = initial.showScreen();
+            user.setUserId(id);
+            if(user.getUserId() >= 0){
+                Screens dash = new Dashboard(user);
+                dash.showScreen();
+                user.setUserId(-2);
+            }else if(user.getUserId() == -1){
+                Screens dash = new DashboardGuest();
+                dash.showScreen();
+                user.setUserId(-2);
+            }else{
+                break loop;
+            }
+        }
         endProgram();
     }
 
@@ -29,21 +40,7 @@ public class App{
     public void endProgram(){
         in.close();
     }
-
-    //Adicioanr ao fim de um arquivo
-    public static void addToFIle(String content, String path) {
-		try {
-			Writer bw = new BufferedWriter(new FileWriter(path, true));			
-			bw.write(content);
-			bw.close();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-   
+  
     //Setup inicial
     public void setup(){
         try{
@@ -54,7 +51,8 @@ public class App{
             
             while ((line = br.readLine()) != null) {
                 if(lineNumber == 1){
-                   Users.setUserID(Integer.parseInt(line));
+                    //
+                   Users.setnumUsers(Integer.parseInt(line));
                 }
             lineNumber++;
             }
@@ -64,6 +62,4 @@ public class App{
         }
 
     }
-
-    //Tela dashboard
 }
