@@ -12,12 +12,13 @@ import java.util.Scanner;
 
 import users.Users;
 import utility.Hash;
+import exceptions.*;
 
 public class InitialScreen extends Screens {
     private static Scanner in = new Scanner(System.in);
     private String separator = "BDE@BV";
 
-    public int showScreen() {
+    public int showScreen() throws ExceptionInvalid{
         System.out.println();
         System.out.println("##=====#===============#====");
         System.out.println("||     |               |    ");
@@ -45,23 +46,32 @@ public class InitialScreen extends Screens {
 
             switch (menuOpt) {
             case "1":
-                signUp();
+                try {
+                    signUp();
+                } catch (ExceptionSignUp e) {
+                    System.out.println(e.getMessage());
+                }
                 break;
             case "2":
-                int id = SignIn();
-                if (id == -2) {
-                    System.out.println("Login ou senha incoretos!");
-                } else {
-                    return id;
+                try {
+                    int id = SignIn();
+                    if (id == -2) {
+                        throw new ExceptionAuthentication("Login ou senha incoretos!");
+                    } else {
+                        return id;
+                    }
+                } catch (ExceptionSignIn e) {
+                    System.out.println("Erro de Login: " + e.getMessage());
+                } catch (ExceptionAuthentication e) {
+                    System.out.println("Erro de autenticação: " + e.getMessage());
                 }
                 break;
             case "3":
                 return -1;
             case "4":
-            return -2;
+                return -2;
             default:
-                System.out.println("Opção Inválida!");
-                break;
+                throw new ExceptionInvalid("Opção Inválida!");
             }
         }
     }
@@ -92,13 +102,14 @@ public class InitialScreen extends Screens {
             bw.write(inputBuffer);
             bw.close();
         } catch (IOException e) {
+            System.out.println("Erro interno");
             e.printStackTrace();
         }
 
     }
 
     // Cadastro
-    public void signUp() {
+    public void signUp() throws ExceptionSignUp{
         String nameUp, emailUp, passUp;
         while (true) {
             System.out.println("Nome:");
@@ -107,6 +118,7 @@ public class InitialScreen extends Screens {
             if (nameUp.length() != 0) {
                 break;
             }
+            throw new ExceptionSignUp("Insira um nome válido!");
         }
         while (true) {
             System.out.println("E-mail:");
@@ -115,6 +127,7 @@ public class InitialScreen extends Screens {
             if (emailUp.length() != 0) {
                 break;
             }
+            throw new ExceptionSignUp("Insira um email válido!");
         }
         while (true) {
             System.out.println("Senha:");
@@ -123,6 +136,7 @@ public class InitialScreen extends Screens {
             if (passUp.length() != 0) {
                 break;
             }
+            throw new ExceptionSignUp("Insira uma senha válida!");
         }
         passUp = Hash.getSecurePassword(passUp);
         String userData = Users.getnumUsers() + separator + nameUp + separator + emailUp + separator + passUp;
@@ -134,7 +148,7 @@ public class InitialScreen extends Screens {
     }
 
     // Login
-    public int SignIn() {
+    public int SignIn()  throws ExceptionSignIn{
         String nameIn, passIn;
         while (true) {
             System.out.println("Nome:");
@@ -143,6 +157,7 @@ public class InitialScreen extends Screens {
             if (nameIn.length() != 0) {
                 break;
             }
+            throw new ExceptionSignIn("Insira um nome válido!");
         }
         while (true) {
             System.out.println("Senha:");
@@ -151,6 +166,7 @@ public class InitialScreen extends Screens {
             if (passIn.length() != 0) {
                 break;
             }
+            throw new ExceptionSignIn("Insira uma senha válido");
         }
 
         try {
@@ -171,6 +187,7 @@ public class InitialScreen extends Screens {
             br.close();
 
         } catch (IOException e) {
+            System.out.println("Erro interno");
             e.printStackTrace();
         }
         return -2;
@@ -184,8 +201,10 @@ public class InitialScreen extends Screens {
             bw.write(content);
             bw.close();
         } catch (UnsupportedEncodingException e) {
+            System.out.println("Erro interno");
             e.printStackTrace();
         } catch (Exception e) {
+            System.out.println("Erro interno");
             e.printStackTrace();
         }
     }

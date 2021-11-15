@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Scanner;
 
+import exceptions.ExceptionInvalid;
 import users.Users;
 
 public class Dashboard extends Screens {
@@ -49,7 +51,7 @@ public class Dashboard extends Screens {
                 return 1;
 
             default:
-                break;
+                throw new ExceptionInvalid("Opção Inválida!");
             }
         }
     }
@@ -77,7 +79,8 @@ public class Dashboard extends Screens {
                 }
             }
             br.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("Erro de leitura de dados");
             e.printStackTrace();
         }
 
@@ -99,7 +102,8 @@ public class Dashboard extends Screens {
                 System.out.println(data[1] + " - " + data[2]);
             }
             br.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("Erro de leitura de dados");
             e.printStackTrace();
         }
 
@@ -107,6 +111,7 @@ public class Dashboard extends Screens {
         System.out.println("Deseja ler qual texto");
         String text = in.nextLine();
         System.out.println();
+        boolean textFound = false;
 
         try {
 
@@ -118,11 +123,17 @@ public class Dashboard extends Screens {
                 String[] data = line.split(separator);
                 if (data[2].equals(text)) {
                     System.out.println(data[2] + "\n" + data[1] + "\n" + data[3]);
+                    textFound = true;
                 }
             }
             br.close();
-        } catch (Exception e) {
+            if(!textFound){
+                throw new ExceptionInvalid("Texto não encontrado");
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+        }catch(ExceptionInvalid e){
+            System.out.println(e.getMessage());
         }
         System.out.println();
     }
@@ -141,7 +152,8 @@ public class Dashboard extends Screens {
                 }
             }
             br.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("Erro de leitura");
             e.printStackTrace();
         }
 
@@ -149,6 +161,7 @@ public class Dashboard extends Screens {
         System.out.println("Deseja editar qual texto?");
         String text = in.nextLine();
         System.out.println();
+        boolean textFound = false;
 
         try {
 
@@ -167,6 +180,7 @@ public class Dashboard extends Screens {
                     inputBuffer += data[0] + separator + data[1] + separator + data[2] + separator + in.nextLine();
                     System.out.println("Texto editado!");
                     System.out.println();
+                    textFound = true;
                     break;
                 } else {
                     inputBuffer += line;
@@ -174,11 +188,18 @@ public class Dashboard extends Screens {
                 inputBuffer += '\n';
             }
             br.close();
+
+            if(!textFound){
+                throw new ExceptionInvalid("Texto não encontrado!");
+            }
             Writer bw = new BufferedWriter(new FileWriter("data/texts.txt"));
             bw.write(inputBuffer);
             bw.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("Erro de leitura");
             e.printStackTrace();
+        }catch(ExceptionInvalid e){
+            System.out.println(e.getMessage());
         }
 
     }
@@ -205,6 +226,7 @@ public class Dashboard extends Screens {
         System.out.println("Deseja apagar qual texto?");
         String text = in.nextLine();
         System.out.println();
+        boolean textFound = false;
 
         try {
 
@@ -218,17 +240,23 @@ public class Dashboard extends Screens {
                 if (Integer.parseInt(data[0]) == user.getUserId() && data[2].equals(text)) {
                     System.out.println("Post deletado");
                     System.out.println();
+                    textFound = true;
                 } else {
                     inputBuffer += line;
                     inputBuffer += '\n';
                 }
             }
             br.close();
+            if(!textFound){
+                throw new ExceptionInvalid("Texto não encontrado!");
+            }
             Writer bw = new BufferedWriter(new FileWriter("data/texts.txt"));
             bw.write(inputBuffer);
             bw.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+        }catch(ExceptionInvalid e){
+            e.getMessage();
         }
 
     }

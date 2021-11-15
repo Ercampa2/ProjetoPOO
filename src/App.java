@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import users.Users;
 import screens.*;
+import exceptions.*;
 
 public class App{
     private static Scanner in = new Scanner(System.in);
@@ -19,15 +20,29 @@ public class App{
     private void run(){
         setup();
         loop:while(true){
-            int id = initial.showScreen();
+            int id;
+            try{
+                id = initial.showScreen();
+            }catch(ExceptionInvalid e){
+                System.out.println(e.getMessage());
+                continue;
+            }
             user.setUserId(id);
             if(user.getUserId() >= 0){
                 Screens dash = new Dashboard(user);
-                dash.showScreen();
+                try{
+                    dash.showScreen();
+                }catch(ExceptionInvalid e){
+                    System.out.println(e.getMessage());
+                }
                 user.setUserId(-2);
             }else if(user.getUserId() == -1){
                 Screens dash = new DashboardGuest();
-                dash.showScreen();
+                try{
+                    dash.showScreen();
+                }catch(ExceptionInvalid e){
+                    System.out.println(e.getMessage());
+                }
                 user.setUserId(-2);
             }else{
                 break loop;

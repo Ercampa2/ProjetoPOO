@@ -2,8 +2,11 @@ package screens;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
+
+import exceptions.ExceptionInvalid;
 
 public class DashboardGuest extends Screens {
     private static Scanner in = new Scanner(System.in);
@@ -25,7 +28,7 @@ public class DashboardGuest extends Screens {
                 return 1;
 
             default:
-                break;
+                throw new ExceptionInvalid("Opção invália!");
             }
         }
     }
@@ -50,6 +53,7 @@ public class DashboardGuest extends Screens {
         System.out.println("Deseja ler qual texto");
         String text = in.nextLine();
         System.out.println();
+        boolean textFound = false;
 
         try {
 
@@ -61,11 +65,17 @@ public class DashboardGuest extends Screens {
                 String[] data = line.split(separator);
                 if (data[2].equals(text)) {
                     System.out.println(data[2] + "\n" + data[1] + "\n" + data[3]);
+                    textFound = true;
                 }
             }
             br.close();
-        } catch (Exception e) {
+            if(!textFound){
+                throw new ExceptionInvalid("texto não encontrado!");
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+        }catch(ExceptionInvalid e){
+            System.out.println(e.getMessage());
         }
         System.out.println();
     }
