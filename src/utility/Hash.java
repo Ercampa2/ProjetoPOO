@@ -2,16 +2,13 @@ package utility;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 public class Hash {
 
 	public static String getSecurePassword(String passwordToHash){
-        byte[] salt = getSalt();
         String generatedPassword = null;
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt);
+            MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] bytes = md.digest(passwordToHash.getBytes());
             StringBuilder sb = new StringBuilder();
             for(int i=0; i< bytes.length ;i++)
@@ -23,18 +20,6 @@ public class Hash {
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return generatedPassword+"BDE@BV"+salt;
-    }
-    
-    private static byte[] getSalt(){
-        try{
-            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "SUN");
-            byte[] salt = new byte[16];
-            sr.nextBytes(salt);
-            return salt;
-        } catch (Exception e) {
-            e.fillInStackTrace();
-            return null;
-        }
+        return generatedPassword;
     }
 }

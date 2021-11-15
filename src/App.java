@@ -9,10 +9,10 @@ import java.io.Writer;
 import java.util.Scanner;
 
 import users.Users;
-import utility.Hash;
+import screens.*;
 
 public class App{
-    static Scanner in = new Scanner(System.in);
+    private static Scanner in = new Scanner(System.in);
     public static void main(String[] args) throws Exception {
         App app = new App();
         app.run();
@@ -20,107 +20,17 @@ public class App{
 
     private void run(){
         setup();
-        System.out.println();
-        System.out.println("##=====#===============#====");
-        System.out.println("||     |               |    ");
-        System.out.println("||     |               |    ");
-        System.out.println("||     |               |    ");
-        System.out.println("||  <=-#-=-=-=-=-=-=-=-#-=> ");
-        System.out.println("||   |    Blog-do-Enzo   |  ");
-        System.out.println("||   |     Bem-Vindo     |  ");
-        System.out.println("||  <=-=-=-=-=-=-=-=-=-=-=> ");
-        System.out.println("||                          ");
-        System.out.println("||                          ");
-        System.out.println("||                          ");
-        System.out.println("||                          ");
-        
-        System.out.println();
-
-        loop:while (true) {
-            System.out.println("1-Cadastrar");
-            System.out.println("2-Entrar com Login e senha");
-            System.out.println("3-Entrar como Convidado");
-            System.out.println("4-Derrubar Servidor");
-
-            String menuOpt = in.nextLine(); 
-            System.out.println();
-
-            switch (menuOpt) {
-                case "1":
-                    signUp();
-                    break;
-                case "2":
-                    // SignIn();
-                    break;
-                case "3":
-                    // SignGuest();
-                    break;
-                case "4":
-                    break loop;
-                default:
-                System.out.println("Opção Inválida!");
-                    break;
-            }
-        }
+        Screens initial = new InitialScreen();
+        initial.showScreen();
         endProgram();
     }
 
-    //Cadastro
-    public void signUp(){
-        String separator = "BDE@BV";
-
-        System.out.println("Nome:");
-        String nameUp = in.nextLine(); 
-        System.out.println();
-        System.out.println("E-mail:");
-        String emailUp = in.nextLine(); 
-        System.out.println();
-        System.out.println("Senha:");
-        String passUp = in.nextLine(); 
-        System.out.println();
-
-        passUp = Hash.getSecurePassword(passUp);
-
-        String userData = Users.getUserID() + separator + nameUp +separator + emailUp + separator + passUp;
-
-        userData = Hash.getSecurePassword(userData);
-
-        addUser(userData);
-    }
-
+    //Configs de encerramento
     public void endProgram(){
         in.close();
     }
 
-    public void addUser(String data){
-        addToFIle(data+'\n', "data/users.txt");
-        Users.addOneUserId();
-
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("data/stuff.txt"), "UTF-8"));
-            String inputBuffer = "";
-            String line;
-            int lineNumber = 0;
-
-            while ((line = br.readLine()) != null) {
-                if(lineNumber == 1){
-                    inputBuffer += Integer.parseInt(line) + 1;
-                }else{
-                    inputBuffer += line;
-                }
-                inputBuffer += '\n';
-                lineNumber++;
-            }
-            br.close();
-            Writer bw = new BufferedWriter(new FileWriter("data/stuff.txt"));			
-			bw.write(inputBuffer);
-			bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
+    //Adicioanr ao fim de um arquivo
     public static void addToFIle(String content, String path) {
 		try {
 			Writer bw = new BufferedWriter(new FileWriter(path, true));			
@@ -134,6 +44,7 @@ public class App{
 
 	}
    
+    //Setup inicial
     public void setup(){
         try{
 
@@ -153,4 +64,6 @@ public class App{
         }
 
     }
+
+    //Tela dashboard
 }
