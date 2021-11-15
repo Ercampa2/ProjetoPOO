@@ -1,7 +1,7 @@
 TRABALHO FINAL
 
 ## stuff.txt
-Versão
+Versão \\n
 Númeor de usuários
 
 ## texts.txt
